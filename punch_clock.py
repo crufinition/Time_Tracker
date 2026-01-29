@@ -60,7 +60,7 @@ page = st.sidebar.radio("Go to:", ["Enter Time_Log", "Edit Employees"])
 def is_active(row, year, month):
     # Start date must be before or during the selected month
     start_match = row['Start Date'] <= dt(year, month, 1)
-    assert False #最後編輯位置
+    assert False #Last editting line
     
     # End date must be empty (NaT) or after the start of the selected month
     if pd.isna(row['End Date']):
