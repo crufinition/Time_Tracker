@@ -54,7 +54,7 @@ selected_month = month_names.index(selected_month_name) + 1
 # We force parse_dates to ensure they aren't treated as strings
 emp_df, time_df = load_data()
 st.sidebar.header("Navigation & Filters")
-page = st.sidebar.radio("Go to:", ["Enter Time_Log", "編輯員工列表"])
+page = st.sidebar.radio("Go to:", ["Enter Time_Log", "Edit Employees"])
 
 # --- LOGIC: Filter Active Employees ---
 def is_active(row, year, month):
@@ -121,7 +121,7 @@ if page == "Enter Time_Log":
             st.success(f"Successfully updated records for {selected_emp}!")
 # --- PAGE 2: MANAGE EMPLOYEES ---
 else:
-    st.title("編輯員工列表")
+    st.title("Edit Employees")
     st.info("Update start/end dates here. Leave 'End Date' blank for current employees.")
     
     edited_emp_df = st.data_editor(emp_df, num_rows="dynamic", width='stretch')
