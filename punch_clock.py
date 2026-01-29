@@ -7,31 +7,31 @@ import calendar
 
 def initialize_files(year=dt.today().year):
     try:
-        pd.read_csv("員工清單.csv")
+        pd.read_csv("Emp_list.csv")
     except FileNotFoundError:
-        pd.DataFrame(columns=['Name', 'Start Date', 'End Date']).to_csv("員工清單.csv", index=False)
+        pd.DataFrame(columns=['Name', 'Start Date', 'End Date']).to_csv("Emp_list.csv", index=False)
     
     try:
-        pd.read_csv(f"{year}打卡紀錄.csv")
+        pd.read_csv(f"{year}Time_Log.csv")
     except FileNotFoundError:
-        pd.DataFrame(columns=['Date', 'Employee', 'Hours']).to_csv(f"{year}打卡紀錄.csv", index=False)
+        pd.DataFrame(columns=['Date', 'Employee', 'Hours']).to_csv(f"{year}Time_Log.csv", index=False)
 
 initialize_files()
 
-st.set_page_config(page_title="打卡紀錄", layout="wide")
+st.set_page_config(page_title="Time_Log", layout="wide")
 
 def load_data(year=dt.today().year):
     # Load or create Employee Roster
     try:
-        emp_df = pd.read_csv("員工清單.csv", parse_dates=['Start Date', 'End Date'])
+        emp_df = pd.read_csv("Emp_list.csv", parse_dates=['Start Date', 'End Date'])
     except FileNotFoundError:
         emp_df = pd.DataFrame(columns=['Name', 'Start Date', 'End Date'])
     
     # Load or create Time Logs
     try:
-        time_df = pd.read_csv(f"{year}打卡紀錄.csv", parse_dates=['Date'])
+        time_df = pd.read_csv(f"{year}Time_Log.csv", parse_dates=['Date'])
     except FileNotFoundError:
-        pd.DataFrame(columns=['Date', 'Employee', 'Hours']).to_csv(f"{year}打卡紀錄.csv", index=False)
+        pd.DataFrame(columns=['Date', 'Employee', 'Hours']).to_csv(f"{year}Time_Log.csv", index=False)
         time_df = pd.DataFrame(columns=['Date', 'Employee', 'Hours'])
         
     return emp_df, time_df
@@ -54,7 +54,7 @@ selected_month = month_names.index(selected_month_name) + 1
 # We force parse_dates to ensure they aren't treated as strings
 emp_df, time_df = load_data()
 st.sidebar.header("Navigation & Filters")
-page = st.sidebar.radio("Go to:", ["輸入打卡紀錄", "編輯員工列表"])
+page = st.sidebar.radio("Go to:", ["Enter Time_Log", "編輯員工列表"])
 
 # --- LOGIC: Filter Active Employees ---
 def is_active(row, year, month):
@@ -72,7 +72,7 @@ def is_active(row, year, month):
 
 active_emps = emp_df[emp_df.apply(lambda r: is_active(r, selected_year, selected_month), axis=1)]['Name'].tolist()
 # --- PAGE 1: TIME TRACKING (EXCEL-STYLE) ---
-if page == "輸入打卡紀錄":
+if page == "Enter Time_Log":
     st.title(f"📅 Timesheet: {selected_month_name} {selected_year}")
     
     if not active_emps:
@@ -127,6 +127,6 @@ else:
     edited_emp_df = st.data_editor(emp_df, num_rows="dynamic", width='stretch')
     
     if st.button("Save Roster Changes"):
-        edited_emp_df.to_csv("員工清單.csv", index=False)
+        edited_emp_df.to_csv("Emp_list.csv", index=False)
         st.success("Roster updated!")
         st.rerun()
